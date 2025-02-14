@@ -19,9 +19,10 @@ Flock::Flock(FlockConfig &config) : config(config)
             sf::Vector2f pos(rand_x, rand_y);
 
             // create zero vel and acc
+            float rot = 0;
             sf::Vector2f vel, acc;
             // create new boid
-            Boid new_boid(pos, vel, acc, config.maxSpeed, config.maxForce);
+            Boid new_boid(pos, rot, vel, acc, config.maxSpeed, config.maxForce);
 
             boids.push_back(new_boid);
         }
@@ -64,8 +65,9 @@ void Flock::render(sf::RenderWindow &window)
 {
     for (auto &boid : boids)
     {
-        sf::CircleShape shape(config.boidRadius);
+        sf::CircleShape shape(config.boidRadius, 3);
         shape.setPosition(boid.getPosition());
+        shape.setRotation(boid.getRotation());
         shape.setFillColor(sf::Color::White);
         window.draw(shape);
     }

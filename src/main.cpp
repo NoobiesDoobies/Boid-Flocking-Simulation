@@ -12,7 +12,7 @@ int main() {
     config.numBoids = 50;
     config.windowWidth = WINDOW_WIDTH;
     config.windowHeight = WINDOW_HEIGHT;
-    config.maxSpeed = 5.0f;
+    config.maxSpeed = 1.0f;
     config.maxForce = 0.05f;
     config.randomize = true;
     config.separationWeight = 0.5;

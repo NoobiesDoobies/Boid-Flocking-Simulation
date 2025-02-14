@@ -1,31 +1,13 @@
 #include "Boid.hpp"
 
-Boid::Boid()
-{
-    pos = {0.f, 0.f};
-    vel = {0.f, 0.f};
-    acc = {0.f, 0.f};
-    maxSpeed = 0.f;
-    maxForce = 0.f;
-}
 Boid::Boid(
     sf::Vector2f pos,
-    sf::Vector2f vel,
-    sf::Vector2f acc) : pos(pos),
-                        vel(vel),
-                        acc(acc)
-{
-
-    maxSpeed = 0.f;
-    maxForce = 0.f;
-}
-
-Boid::Boid(
-    sf::Vector2f pos,
+    float rot,
     sf::Vector2f vel,
     sf::Vector2f acc,
     float maxSpeed,
     float maxForce) : pos(pos),
+                      rot(rot),
                       vel(vel),
                       acc(acc),
                       maxSpeed(maxSpeed),
@@ -43,6 +25,7 @@ void Boid::update(int windowWidth, int windowHeight, bool wrapAroundEdges, int b
     vel = limitVector(vel, maxSpeed);
 
     pos += vel;
+    rot = std::atan2(-vel.y, vel.x) * 180.0f / 3.1415;
 
     // reset acc to zero
     acc = sf::Vector2f();
@@ -81,7 +64,6 @@ sf::Vector2f Boid::separation(std::vector<Boid> *boids, float separationRadius)
     }
 
     return steer;
-    // return sf::Vector2f();
 }
 
 sf::Vector2f Boid::alignment(std::vector<Boid> *boids, float alignmentRadius)
@@ -134,6 +116,11 @@ sf::Vector2f Boid::getPosition()
     return pos;
 }
 
+float Boid::getRotation()
+{
+    return rot;
+}
+
 sf::Vector2f Boid::getVelocity()
 {
     return vel;
@@ -142,6 +129,11 @@ sf::Vector2f Boid::getVelocity()
 sf::Vector2f Boid::getAcceleration()
 {
     return acc;
+}
+
+void Boid::setRotation(float rotation)
+{
+    rot = rotation;
 }
 
 sf::Vector2f Boid::limitVector(sf::Vector2f vel, float maxMagnitude)
