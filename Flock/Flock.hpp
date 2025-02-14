@@ -21,6 +21,9 @@ struct FlockConfig
     float separationWeight;
     float alignmentWeight;
     float cohesionWeight;
+    float separationRadius;
+    float alignmentRadius;
+    float cohesionRadius;
 
     // Environment
     int windowWidth;
@@ -43,13 +46,13 @@ struct FlockConfig
 
     // Constructor with default values
     FlockConfig(int numBoids = 100, float maxSpeed = 4.0f, float maxForce = 0.1f,
-                float separationWeight = 1.5f, float alignmentWeight = 1.0f, float cohesionWeight = 1.0f,
+                float separationWeight = 1.5f, float alignmentWeight = 1.0f, float cohesionWeight = 1.0f, float separationRadius = 1.f, float alignmentRadius = 1.f, float cohesionRadius = 1.f,
                 int windowWidth = 800, int windowHeight = 600, bool wrapAroundEdges = true, int boundaryMargin = 10,
                 bool mouseAttraction = false, float mouseForce = 0.5f,
                 bool showVelocityVectors = false, bool showPerceptionRadius = false, bool trailEffect = false, float boidRadius = 5.f,
                 bool randomize = true)
         : numBoids(numBoids), maxSpeed(maxSpeed), maxForce(maxForce),
-          separationWeight(separationWeight), alignmentWeight(alignmentWeight), cohesionWeight(cohesionWeight),
+          separationWeight(separationWeight), alignmentWeight(alignmentWeight), cohesionWeight(cohesionWeight), separationRadius(separationRadius), alignmentRadius(alignmentRadius), cohesionRadius(cohesionRadius),
           windowWidth(windowWidth), windowHeight(windowHeight), wrapAroundEdges(wrapAroundEdges), boundaryMargin(boundaryMargin),
           mouseAttraction(mouseAttraction), mouseForce(mouseForce),
           showVelocityVectors(showVelocityVectors), showPerceptionRadius(showPerceptionRadius), trailEffect(trailEffect), boidRadius(boidRadius),

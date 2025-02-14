@@ -42,9 +42,9 @@ void Flock::applyFlockingRules()
 {
     for (auto &boid : boids)
     {
-        sf::Vector2f sep = boid.separation(boids);
-        sf::Vector2f alg = boid.alignment(boids);
-        sf::Vector2f coh = boid.cohesion(boids);
+        sf::Vector2f sep = boid.separation(&boids, config.separationRadius);
+        sf::Vector2f alg = boid.alignment(&boids, config.alignmentRadius);
+        sf::Vector2f coh = boid.cohesion(&boids, config.cohesionRadius);
 
         sf::Vector2f resultantForce = sep * config.separationWeight + alg * config.alignmentWeight + coh * config.cohesionWeight;
 
@@ -56,7 +56,7 @@ void Flock::update()
 {
     for (auto &boid : boids)
     {
-        boid.update(config.windowHeight, config.windowHeight, config.wrapAroundEdges, config.boundaryMargin);
+        boid.update(config.windowWidth, config.windowHeight, config.wrapAroundEdges, config.boundaryMargin);
     }
 }
 
