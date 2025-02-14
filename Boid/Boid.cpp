@@ -25,7 +25,7 @@ void Boid::update(int windowWidth, int windowHeight, bool wrapAroundEdges, int b
     vel = limitVector(vel, maxSpeed);
 
     pos += vel;
-    rot = std::atan2(-vel.y, vel.x) * 180.0f / 3.1415;
+    rot = std::atan2(vel.x, -vel.y) * 180.0f / 3.1415;
 
     // reset acc to zero
     acc = sf::Vector2f();

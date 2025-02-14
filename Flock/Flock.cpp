@@ -69,6 +69,17 @@ void Flock::render(sf::RenderWindow &window)
         shape.setPosition(boid.getPosition());
         shape.setRotation(boid.getRotation());
         shape.setFillColor(sf::Color::White);
-        window.draw(shape);
+        // window.draw(shape);
+
+        sf::ConvexShape convex;
+        convex.setPointCount(3);
+        convex.setPoint(0, {-config.boidRadius / 2, +config.boidRadius / 2});
+        convex.setPoint(1, {+config.boidRadius / 2, +config.boidRadius / 2});
+        convex.setPoint(2, {0, -config.boidRadius});
+        convex.setPosition(boid.getPosition());
+        convex.setRotation(boid.getRotation());
+
+        convex.setFillColor(sf::Color::White);
+        window.draw(convex);
     }
 }

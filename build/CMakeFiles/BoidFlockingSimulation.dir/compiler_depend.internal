@@ -511,6 +511,7 @@ CMakeFiles/BoidFlockingSimulation.dir/Flock/Flock.cpp.o
  /usr/include/SFML/Graphics/Transformable.hpp
  /usr/include/SFML/Graphics/VertexArray.hpp
  /usr/include/SFML/Graphics/RectangleShape.hpp
+ /usr/include/SFML/Graphics/ConvexShape.hpp
  /home/carlios/cpp-projects/boid_flocking_simulation/Boid/Boid.hpp
  /usr/include/SFML/System.hpp
  /usr/include/SFML/System/Err.hpp

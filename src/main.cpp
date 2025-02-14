@@ -18,7 +18,7 @@ int main() {
     config.separationWeight = 0.5;
     config.alignmentWeight = 0.5;
     config.cohesionWeight = 0.5;
-    config.boidRadius = 5;
+    config.boidRadius = 7.5;
     config.separationRadius = 50;
     config.alignmentRadius = 80;
     config.cohesionRadius = 100;
