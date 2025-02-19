@@ -1,10 +1,15 @@
 #include <iostream>
+
 #include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/System.hpp>
+#include "Gui.hpp"
+
 #include "Boid.hpp"
 #include "Flock.hpp"
 
-#define WINDOW_WIDTH  640
-#define WINDOW_HEIGHT 480
+#define WINDOW_HEIGHT 480 
+#define WINDOW_WIDTH  720
 
 int main() {
     // Create Config
@@ -12,16 +17,16 @@ int main() {
     config.numBoids = 50;
     config.windowWidth = WINDOW_WIDTH;
     config.windowHeight = WINDOW_HEIGHT;
-    config.maxSpeed = 1.0f;
-    config.maxForce = 0.05f;
+    config.maxSpeed = 10.0f;
+    config.maxForce = 0.1f;
     config.randomize = true;
-    config.separationWeight = 0.5;
-    config.alignmentWeight = 0.5;
-    config.cohesionWeight = 0.5;
+    config.separationWeight = 10.0;
+    config.alignmentWeight = 1.0;
+    config.cohesionWeight = 1.0;
     config.boidRadius = 7.5;
-    config.separationRadius = 50;
-    config.alignmentRadius = 80;
-    config.cohesionRadius = 100;
+    config.separationRadius = WINDOW_WIDTH/10;
+    config.alignmentRadius = WINDOW_WIDTH/5;
+    config.cohesionRadius = WINDOW_WIDTH/5;
 
     // Initialize Flock
     std::cout << "Creating Flock..." << std::endl;
@@ -36,6 +41,7 @@ int main() {
         return EXIT_FAILURE;
     }
 
+
     // Main Loop
     sf::Clock clock;
     while (App.isOpen()) {
@@ -44,7 +50,11 @@ int main() {
         while (App.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 App.close();
+            
         }
+
+        // Draw slider
+
 
         // Update Simulation
         float dt = clock.restart().asSeconds();
