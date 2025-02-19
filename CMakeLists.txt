@@ -28,6 +28,15 @@ add_executable(BoidFlockingSimulation
     Flock/Flock.cpp
 )
 
+# Install widget styles to a specific directory
+install(DIRECTORY ${WIDGET_STYLES_PATH}/
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/myapp/widget_styles
+    FILES_MATCHING PATTERN "*.png" PATTERN "*.ttf" PATTERN "*.jpg"
+)
+
+file(COPY ${PROJECT_SOURCE_DIR}/widget_styles/tahoma.ttf DESTINATION ${CMAKE_BINARY_DIR}/widget_styles)
+file(COPY ${PROJECT_SOURCE_DIR}/widget_styles/texture-default.png DESTINATION ${CMAKE_BINARY_DIR}/widget_styles)
+
 # Link the libraries
 target_link_libraries(BoidFlockingSimulation PRIVATE 
     sfml-system 
