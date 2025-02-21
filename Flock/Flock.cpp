@@ -22,7 +22,18 @@ Flock::Flock(FlockConfig &config) : config(config)
             float rot = 0;
             sf::Vector2f vel, acc;
             // create new boid
-            Boid new_boid(pos, rot, vel, acc, config.maxSpeed, config.maxForce);
+            BoidState state = {pos, rot, vel, acc};
+            BoidConfig boidConfig = {
+                config.maxSpeed,
+                config.maxForce,
+                config.separationWeight,
+                config.alignmentWeight,
+                config.cohesionWeight,
+                config.separationRadius,
+                config.alignmentRadius,
+                config.cohesionRadius};
+                
+            Boid new_boid(boidConfig, state);
 
             boids.push_back(new_boid);
         }
@@ -66,8 +77,8 @@ void Flock::render(sf::RenderWindow &window)
     for (auto &boid : boids)
     {
         sf::CircleShape shape(config.boidRadius, 3);
-        shape.setPosition(boid.getPosition());
-        shape.setRotation(boid.getRotation());
+        shape.setPosition(boid.getState().pos);
+        shape.setRotation(boid.getState().rot);
         shape.setFillColor(sf::Color::White);
         // window.draw(shape);
 
@@ -76,10 +87,29 @@ void Flock::render(sf::RenderWindow &window)
         convex.setPoint(0, {-config.boidRadius / 2, +config.boidRadius / 2});
         convex.setPoint(1, {+config.boidRadius / 2, +config.boidRadius / 2});
         convex.setPoint(2, {0, -config.boidRadius});
-        convex.setPosition(boid.getPosition());
-        convex.setRotation(boid.getRotation());
+        convex.setPosition(boid.getState().pos);
+        convex.setRotation(boid.getState().rot);
 
         convex.setFillColor(sf::Color::White);
         window.draw(convex);
+    }
+}
+
+void Flock::setConfig(FlockConfig &config)
+{
+    this->config = config;
+    BoidConfig newBoidConfig = {
+        config.maxSpeed,
+        config.maxForce,
+        config.separationWeight,
+        config.alignmentWeight,
+        config.cohesionWeight,
+        config.separationRadius,
+        config.alignmentRadius,
+        config.cohesionRadius};
+    
+    for (auto &boid : boids)
+    {
+        boid.setConfig(newBoidConfig);
     }
 }

@@ -73,6 +73,7 @@ public:
     void applyFlockingRules();
     void update();
     void render(sf::RenderWindow &window);
+    void setConfig(FlockConfig &config);
 };
 
 #endif

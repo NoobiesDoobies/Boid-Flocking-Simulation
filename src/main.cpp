@@ -95,6 +95,60 @@ int main()
                              { std::cout << "Value is " << test_slider->getValue() << std::endl; });
     form->addRow("Test Slider", test_slider);
 
+    gui::Slider *maxSpeed_slider = new gui::Slider();
+    maxSpeed_slider->setStep(1);
+    maxSpeed_slider->setCallback([&]()
+                                 { 
+                                    config.maxSpeed = maxSpeed_slider->getValue();
+                                    flock.setConfig(config);
+                                    std::cout << "Max Speed is " << maxSpeed_slider->getValue() << std::endl; });
+    form->addRow("Max Speed", maxSpeed_slider);
+
+    gui::Slider *maxForce_slider = new gui::Slider();
+    maxForce_slider->setStep(1);
+    maxForce_slider->setCallback([&]()
+                                 { 
+                                    config.maxForce = maxForce_slider->getValue();
+                                    flock.setConfig(config);
+                                    std::cout << "Max Force is " << maxForce_slider->getValue() << std::endl; });
+    form->addRow("Max Force", maxForce_slider);
+
+    gui::Slider *separationWeight_slider = new gui::Slider();
+    separationWeight_slider->setStep(1);
+    separationWeight_slider->setCallback([&]()
+                                         { 
+                                    config.separationWeight = separationWeight_slider->getValue();
+                                    flock.setConfig(config);
+                                    std::cout << "Separation Weight is " << separationWeight_slider->getValue() << std::endl; });
+    form->addRow("Separation Weight", separationWeight_slider);
+
+    gui::Slider *alignmentWeight_slider = new gui::Slider();
+    alignmentWeight_slider->setStep(1);
+    alignmentWeight_slider->setCallback([&]()
+                                        { 
+                                    config.alignmentWeight = alignmentWeight_slider->getValue();
+                                    flock.setConfig(config);
+                                    std::cout << "Alignment Weight is " << alignmentWeight_slider->getValue() << std::endl; });
+    form->addRow("Alignment Weight", alignmentWeight_slider);
+
+    gui::Slider *cohesionWeight_slider = new gui::Slider();
+    cohesionWeight_slider->setStep(1);
+    cohesionWeight_slider->setCallback([&]()
+                                       { 
+                                    config.cohesionWeight = cohesionWeight_slider->getValue();
+                                    flock.setConfig(config);
+                                    std::cout << "Cohesion Weight is " << cohesionWeight_slider->getValue() << std::endl; });
+    form->addRow("Cohesion Weight", cohesionWeight_slider);
+
+    gui::Slider *separationRadius_slider = new gui::Slider();
+    separationRadius_slider->setStep(1);
+    separationRadius_slider->setCallback([&]()
+                                         { 
+                                    config.separationRadius = separationRadius_slider->getValue();
+                                    flock.setConfig(config);
+                                    std::cout << "Separation Radius is " << separationRadius_slider->getValue() << std::endl; });
+    form->addRow("Separation Radius", separationRadius_slider);
+
     // Main Loop
     sf::Clock clock;
     while (App.isOpen())
@@ -107,8 +161,6 @@ int main()
             if (event.type == sf::Event::Closed)
                 App.close();
         }
-
-        // Draw slider
 
         // Update Simulation
         float dt = clock.restart().asSeconds();

@@ -1,43 +1,37 @@
 #include "Boid.hpp"
 
-Boid::Boid(
-    sf::Vector2f pos,
-    float rot,
-    sf::Vector2f vel,
-    sf::Vector2f acc,
-    float maxSpeed,
-    float maxForce) : pos(pos),
-                      rot(rot),
-                      vel(vel),
-                      acc(acc),
-                      maxSpeed(maxSpeed),
-                      maxForce(maxForce) {}
+Boid::Boid(BoidConfig config, BoidState state)
+{
+    this->config = config;
+    this->state = state;
+}
 
 void Boid::applyForce(sf::Vector2f force)
 {
-    force = limitVector(force, maxForce);
-    acc += force;
-}
+    force = limitVector(force, config.maxForce);    // limit the force
+    state.acc += force;
+};
 
 void Boid::update(int windowWidth, int windowHeight, bool wrapAroundEdges, int boundaryMargin)
 {
-    vel = vel + acc;
-    vel = limitVector(vel, maxSpeed);
+    state.vel = state.vel + state.acc;
+    state.vel = limitVector(state.vel, config.maxSpeed);
+    std::cout << "config.maxSpeed: " << config.maxSpeed << std::endl;
 
-    pos += vel;
-    rot = std::atan2(vel.x, -vel.y) * 180.0f / 3.1415;
+    state.pos += state.vel;
+    state.rot = std::atan2(state.vel.x, -state.vel.y) * 180.0f / 3.1415;
 
-    // reset acc to zero
-    acc = sf::Vector2f();
+    // reset state.acc to zero
+    state.acc = sf::Vector2f();
 
-    if (pos.x > windowWidth)
-        pos.x = 0;
-    if (pos.x < 0)
-        pos.x = windowWidth;
-    if (pos.y > windowHeight)
-        pos.y = 0;
-    if (pos.y < 0)
-        pos.y = windowHeight;
+    if (state.pos.x > windowWidth)
+        state.pos.x = 0;
+    if (state.pos.x < 0)
+        state.pos.x = windowWidth;
+    if (state.pos.y > windowHeight)
+        state.pos.y = 0;
+    if (state.pos.y < 0)
+        state.pos.y = windowHeight;
 }
 
 sf::Vector2f Boid::separation(std::vector<Boid> *boids, float separationRadius)
@@ -46,11 +40,11 @@ sf::Vector2f Boid::separation(std::vector<Boid> *boids, float separationRadius)
     int count = 0;
     for (auto &other : *boids)
     {
-        float dist = distance(pos, other.getPosition());
+        float dist = distance(state.pos, other.getState().pos);
         // don't compare self and make sure is within sep rad
         if (this != &other && dist < separationRadius)
         {
-            sf::Vector2f delta_pos = pos - other.getPosition();
+            sf::Vector2f delta_pos = state.pos - other.getState().pos;
             steer += delta_pos / (dist * dist);
             count++;
         }
@@ -60,7 +54,7 @@ sf::Vector2f Boid::separation(std::vector<Boid> *boids, float separationRadius)
     {
         steer = steer / (float)count; // averaged out the force
 
-        steer = limitVector(steer, maxForce);
+        steer = limitVector(steer, config.maxForce);
     }
 
     return steer;
@@ -68,22 +62,22 @@ sf::Vector2f Boid::separation(std::vector<Boid> *boids, float separationRadius)
 
 sf::Vector2f Boid::alignment(std::vector<Boid> *boids, float alignmentRadius)
 {
-    sf::Vector2f avgVelocity(0, 0);
+    sf::Vector2f avg_vel(0, 0);
     int count = 0;
     for (auto &other : *boids)
     {
-        float dist = distance(pos, other.getPosition());
+        float dist = distance(state.pos, other.getState().pos);
         if (this != &other && dist < alignmentRadius)
         {
-            avgVelocity += other.getVelocity();
+            avg_vel += other.getState().vel;
             count++;
         }
     }
 
     if (count > 0)
     {
-        avgVelocity /= (float)count;
-        return limitVector(avgVelocity - vel, maxForce);
+        avg_vel /= (float)count;
+        return limitVector(avg_vel - state.vel, config.maxForce);
     }
     return sf::Vector2f();
 }
@@ -95,10 +89,10 @@ sf::Vector2f Boid::cohesion(std::vector<Boid> *boids, float cohesionRadius)
 
     for (auto &other : *boids)
     {
-        float dist = distance(pos, other.getPosition());
+        float dist = distance(state.pos, other.getState().pos);
         if (this != &other && dist < cohesionRadius)
         {
-            center += other.getPosition();
+            center += other.getState().pos;
             count++;
         }
     }
@@ -106,43 +100,38 @@ sf::Vector2f Boid::cohesion(std::vector<Boid> *boids, float cohesionRadius)
     if (count > 0)
     {
         center /= (float)count;
-        return limitVector(center - pos, maxForce);
+        return limitVector(center - state.pos, config.maxForce);
     }
     return sf::Vector2f();
 }
 
-sf::Vector2f Boid::getPosition()
+BoidState Boid::getState()
 {
-    return pos;
+    return state;
 }
 
-float Boid::getRotation()
+BoidConfig Boid::getConfig()
 {
-    return rot;
+    return config;
 }
 
-sf::Vector2f Boid::getVelocity()
+void Boid::setState(BoidState state)
 {
-    return vel;
+    this->state = state;
 }
 
-sf::Vector2f Boid::getAcceleration()
+void Boid::setConfig(BoidConfig config)
 {
-    return acc;
-}
-
-void Boid::setRotation(float rotation)
-{
-    rot = rotation;
+    this->config = config;
 }
 
 sf::Vector2f Boid::limitVector(sf::Vector2f vel, float maxMagnitude)
 {
-    // calculate the magnitude of vel
+    // calculate the magnitude of state.vel
     float speed = sqrt(vel.x * vel.x + vel.y * vel.y);
     if (speed > maxMagnitude)
     {
-        // normalized vel
+        // normalized state.vel
         sf::Vector2f normalizedVel = vel / speed;
 
         // limit to max
