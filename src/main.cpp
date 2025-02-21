@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -46,6 +47,16 @@ void clearScreen(sf::RenderWindow *window, sf::Color sim_bg_color, sf::Color sli
     window->draw(slider);
 }
 
+struct SliderConfig
+{
+    std::string name;
+    int minValue;
+    int maxValue;
+    int step;
+    float scaler;
+    float *variableToBeChanged;
+};
+
 int main()
 {
     // Create Config
@@ -89,56 +100,39 @@ int main()
     menu.setPosition(WINDOW_WIDTH, 0);
 
     // Create slider
+    std::vector<SliderConfig> slider_configs;
+    //                         name,                min,    max,    step,   scaler, variableToBeChanged
+    // slider_configs.push_back({"Number of Boids", 1, 100, 1, 1, &config.numBoids});
+    slider_configs.push_back({"Max Speed", 1, 20, 1, 1, &config.maxSpeed});
+    slider_configs.push_back({"Max Force", 1, 20, 1, 1, &config.maxForce});
+    slider_configs.push_back({"Separation Weight", 0, 20, 1, 1, &config.separationWeight});
+    slider_configs.push_back({"Alignment Weight", 0, 20, 1, 1, &config.alignmentWeight});
+    slider_configs.push_back({"Cohesion Weight", 0, 20, 1, 1, &config.cohesionWeight});
+    slider_configs.push_back({"Boid Radius", 1, 20, 1, 1, &config.boidRadius});
+    slider_configs.push_back({"Separation Radius", 1, 200, 1, 1, &config.separationRadius});
+
+    for (auto &slider_config : slider_configs)
+    {
+        gui::Slider *slider = new gui::Slider();
+        slider->setStep(slider_config.step);
+        slider->setCallback([&slider_config, slider, &config, &flock]() {
+            // Directly update the value
+            *slider_config.variableToBeChanged = slider->getValue() * slider_config.scaler;
+    
+            // Apply updated config
+            flock.setConfig(config);
+    
+            // Debug print
+            std::cout << slider_config.name << " is now " << *slider_config.variableToBeChanged << std::endl;
+        });
+        form->addRow(slider_config.name, slider);
+    }
+
     gui::Slider *test_slider = new gui::Slider();
     test_slider->setStep(1);
     test_slider->setCallback([&]()
                              { std::cout << "Value is " << test_slider->getValue() << std::endl; });
     form->addRow("Test Slider", test_slider);
-
-    gui::Slider *maxSpeed_slider = new gui::Slider();
-    maxSpeed_slider->setStep(1);
-    maxSpeed_slider->setCallback([&]()
-                                 { 
-                                    config.maxSpeed = maxSpeed_slider->getValue();
-                                    flock.setConfig(config);
-                                    std::cout << "Max Speed is " << maxSpeed_slider->getValue() << std::endl; });
-    form->addRow("Max Speed", maxSpeed_slider);
-
-    gui::Slider *maxForce_slider = new gui::Slider();
-    maxForce_slider->setStep(1);
-    maxForce_slider->setCallback([&]()
-                                 { 
-                                    config.maxForce = maxForce_slider->getValue();
-                                    flock.setConfig(config);
-                                    std::cout << "Max Force is " << maxForce_slider->getValue() << std::endl; });
-    form->addRow("Max Force", maxForce_slider);
-
-    gui::Slider *separationWeight_slider = new gui::Slider();
-    separationWeight_slider->setStep(1);
-    separationWeight_slider->setCallback([&]()
-                                         { 
-                                    config.separationWeight = separationWeight_slider->getValue();
-                                    flock.setConfig(config);
-                                    std::cout << "Separation Weight is " << separationWeight_slider->getValue() << std::endl; });
-    form->addRow("Separation Weight", separationWeight_slider);
-
-    gui::Slider *alignmentWeight_slider = new gui::Slider();
-    alignmentWeight_slider->setStep(1);
-    alignmentWeight_slider->setCallback([&]()
-                                        { 
-                                    config.alignmentWeight = alignmentWeight_slider->getValue();
-                                    flock.setConfig(config);
-                                    std::cout << "Alignment Weight is " << alignmentWeight_slider->getValue() << std::endl; });
-    form->addRow("Alignment Weight", alignmentWeight_slider);
-
-    gui::Slider *cohesionWeight_slider = new gui::Slider();
-    cohesionWeight_slider->setStep(1);
-    cohesionWeight_slider->setCallback([&]()
-                                       { 
-                                    config.cohesionWeight = cohesionWeight_slider->getValue();
-                                    flock.setConfig(config);
-                                    std::cout << "Cohesion Weight is " << cohesionWeight_slider->getValue() << std::endl; });
-    form->addRow("Cohesion Weight", cohesionWeight_slider);
 
     gui::Slider *separationRadius_slider = new gui::Slider();
     separationRadius_slider->setStep(1);
