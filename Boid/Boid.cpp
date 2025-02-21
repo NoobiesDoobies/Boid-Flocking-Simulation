@@ -16,7 +16,6 @@ void Boid::update(int windowWidth, int windowHeight, bool wrapAroundEdges, int b
 {
     state.vel = state.vel + state.acc;
     state.vel = limitVector(state.vel, config->maxSpeed);
-    std::cout << "config->maxSpeed: " << config->maxSpeed << std::endl;
 
     state.pos += state.vel;
     state.rot = std::atan2(state.vel.x, -state.vel.y) * 180.0f / 3.1415;

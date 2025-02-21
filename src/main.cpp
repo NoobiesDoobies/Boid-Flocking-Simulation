@@ -128,20 +128,7 @@ int main()
         form->addRow(slider_config.name, slider);
     }
 
-    gui::Slider *test_slider = new gui::Slider();
-    test_slider->setStep(1);
-    test_slider->setCallback([&]()
-                             { std::cout << "Value is " << test_slider->getValue() << std::endl; });
-    form->addRow("Test Slider", test_slider);
 
-    gui::Slider *separationRadius_slider = new gui::Slider();
-    separationRadius_slider->setStep(1);
-    separationRadius_slider->setCallback([&]()
-                                         { 
-                                    config.separationRadius = separationRadius_slider->getValue();
-                                    flock.setConfig(config);
-                                    std::cout << "Separation Radius is " << separationRadius_slider->getValue() << std::endl; });
-    form->addRow("Separation Radius", separationRadius_slider);
 
     // Main Loop
     sf::Clock clock;
