@@ -12,8 +12,14 @@
 #define WINDOW_HEIGHT 480
 #define WINDOW_WIDTH 720
 
-#define MENU_WIDTH 240
+#define MENU_WIDTH 320
 #define MENU_HEIGHT WINDOW_HEIGHT
+
+#define MENU_PADDING_X 10
+#define MENU_PADDING_Y 10
+
+#define SLIDER_LENGTH (MENU_WIDTH - 2*MENU_PADDING_X)/2
+
 sf::Color hex2color(const std::string &hexcolor)
 {
     sf::Color color = sf::Color::White;
@@ -97,7 +103,7 @@ int main()
     gui::HBoxLayout *hbox = menu.addHBoxLayout();
     gui::FormLayout *form = hbox->addFormLayout();
 
-    menu.setPosition(WINDOW_WIDTH, 0);
+    menu.setPosition(WINDOW_WIDTH + MENU_PADDING_X, MENU_PADDING_Y);
 
     // Create slider
     std::vector<SliderConfig> slider_configs;
@@ -108,12 +114,15 @@ int main()
     slider_configs.push_back({"Separation Weight", 0, 20, 1, 1, &config.separationWeight});
     slider_configs.push_back({"Alignment Weight", 0, 20, 1, 1, &config.alignmentWeight});
     slider_configs.push_back({"Cohesion Weight", 0, 20, 1, 1, &config.cohesionWeight});
-    slider_configs.push_back({"Boid Radius", 1, 20, 1, 1, &config.boidRadius});
     slider_configs.push_back({"Separation Radius", 1, 200, 1, 1, &config.separationRadius});
+    slider_configs.push_back({"Alignment Radius", 1, 200, 1, 1, &config.alignmentRadius});
+    slider_configs.push_back({"Cohesion Radius", 1, 200, 1, 1, &config.cohesionRadius});
+    slider_configs.push_back({"Boid Radius", 1, 20, 1, 1, &config.boidRadius});
+
 
     for (auto &slider_config : slider_configs)
     {
-        gui::Slider *slider = new gui::Slider();
+        gui::Slider *slider = new gui::Slider(SLIDER_LENGTH);
         slider->setStep(slider_config.step);
         slider->setCallback([&slider_config, slider, &config, &flock]() {
             // Directly update the value
@@ -124,7 +133,8 @@ int main()
     
             // Debug print
             std::cout << slider_config.name << " is now " << *slider_config.variableToBeChanged << std::endl;
-        });
+        }
+    );
         form->addRow(slider_config.name, slider);
     }
 
