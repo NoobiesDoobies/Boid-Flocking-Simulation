@@ -1,6 +1,6 @@
 #include "Boid.hpp"
 
-Boid::Boid(BoidConfig config, BoidState state)
+Boid::Boid(std::shared_ptr<BoidConfig> config, BoidState state)
 {
     this->config = config;
     this->state = state;
@@ -8,15 +8,15 @@ Boid::Boid(BoidConfig config, BoidState state)
 
 void Boid::applyForce(sf::Vector2f force)
 {
-    force = limitVector(force, config.maxForce);    // limit the force
+    force = limitVector(force, config->maxForce);    // limit the force
     state.acc += force;
 };
 
 void Boid::update(int windowWidth, int windowHeight, bool wrapAroundEdges, int boundaryMargin)
 {
     state.vel = state.vel + state.acc;
-    state.vel = limitVector(state.vel, config.maxSpeed);
-    std::cout << "config.maxSpeed: " << config.maxSpeed << std::endl;
+    state.vel = limitVector(state.vel, config->maxSpeed);
+    std::cout << "config->maxSpeed: " << config->maxSpeed << std::endl;
 
     state.pos += state.vel;
     state.rot = std::atan2(state.vel.x, -state.vel.y) * 180.0f / 3.1415;
@@ -54,7 +54,7 @@ sf::Vector2f Boid::separation(std::vector<Boid> *boids, float separationRadius)
     {
         steer = steer / (float)count; // averaged out the force
 
-        steer = limitVector(steer, config.maxForce);
+        steer = limitVector(steer, config->maxForce);
     }
 
     return steer;
@@ -77,7 +77,7 @@ sf::Vector2f Boid::alignment(std::vector<Boid> *boids, float alignmentRadius)
     if (count > 0)
     {
         avg_vel /= (float)count;
-        return limitVector(avg_vel - state.vel, config.maxForce);
+        return limitVector(avg_vel - state.vel, config->maxForce);
     }
     return sf::Vector2f();
 }
@@ -100,7 +100,7 @@ sf::Vector2f Boid::cohesion(std::vector<Boid> *boids, float cohesionRadius)
     if (count > 0)
     {
         center /= (float)count;
-        return limitVector(center - state.pos, config.maxForce);
+        return limitVector(center - state.pos, config->maxForce);
     }
     return sf::Vector2f();
 }
@@ -110,19 +110,19 @@ BoidState Boid::getState()
     return state;
 }
 
-BoidConfig Boid::getConfig()
+std::shared_ptr<BoidConfig> Boid::getConfig()
 {
     return config;
 }
 
-void Boid::setState(BoidState state)
+void Boid::setState(BoidState newState)
 {
-    this->state = state;
+    state = newState;
 }
 
-void Boid::setConfig(BoidConfig config)
+void Boid::setConfig(std::shared_ptr<BoidConfig> newConfig)
 {
-    this->config = config;
+    config = newConfig;
 }
 
 sf::Vector2f Boid::limitVector(sf::Vector2f vel, float maxMagnitude)

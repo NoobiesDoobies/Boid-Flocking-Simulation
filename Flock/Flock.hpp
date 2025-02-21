@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <vector>
 #include <random>
+#include <memory>
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
@@ -65,6 +66,7 @@ class Flock
 private:
     std::vector<Boid> boids;
     FlockConfig config;
+    std::shared_ptr<BoidConfig> sharedBoidConfig;
 
 public:
     Flock(FlockConfig &config);

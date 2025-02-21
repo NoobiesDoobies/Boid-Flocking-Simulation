@@ -4,6 +4,18 @@ Flock::Flock(FlockConfig &config) : config(config)
 {
     // generate boids
 
+    sharedBoidConfig = std::make_shared<BoidConfig> (
+        BoidConfig {
+            config.maxSpeed,
+            config.maxForce,
+            config.separationWeight,
+            config.alignmentWeight,
+            config.cohesionWeight,
+            config.separationRadius,
+            config.alignmentRadius,
+            config.cohesionRadius
+        }
+    );
     for (int i = 0; i < config.numBoids; i++)
     {
         if (config.randomize)
@@ -23,17 +35,8 @@ Flock::Flock(FlockConfig &config) : config(config)
             sf::Vector2f vel, acc;
             // create new boid
             BoidState state = {pos, rot, vel, acc};
-            BoidConfig boidConfig = {
-                config.maxSpeed,
-                config.maxForce,
-                config.separationWeight,
-                config.alignmentWeight,
-                config.cohesionWeight,
-                config.separationRadius,
-                config.alignmentRadius,
-                config.cohesionRadius};
-                
-            Boid new_boid(boidConfig, state);
+
+            Boid new_boid(sharedBoidConfig, state);
 
             boids.push_back(new_boid);
         }
@@ -98,18 +101,22 @@ void Flock::render(sf::RenderWindow &window)
 void Flock::setConfig(FlockConfig &config)
 {
     this->config = config;
-    BoidConfig newBoidConfig = {
-        config.maxSpeed,
-        config.maxForce,
-        config.separationWeight,
-        config.alignmentWeight,
-        config.cohesionWeight,
-        config.separationRadius,
-        config.alignmentRadius,
-        config.cohesionRadius};
-    
+ 
+    sharedBoidConfig = std::make_shared<BoidConfig> (
+        BoidConfig {
+            config.maxSpeed,
+            config.maxForce,
+            config.separationWeight,
+            config.alignmentWeight,
+            config.cohesionWeight,
+            config.separationRadius,
+            config.alignmentRadius,
+            config.cohesionRadius
+        }
+    );
     for (auto &boid : boids)
     {
-        boid.setConfig(newBoidConfig);
+        boid.setConfig(sharedBoidConfig);
     }
+    
 }

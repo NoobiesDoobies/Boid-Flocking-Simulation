@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <memory>
 
 #include <SFML/System.hpp>
 
@@ -30,7 +31,7 @@ struct BoidState
 class Boid
 {
 private:
-    BoidConfig config;
+    std::shared_ptr<BoidConfig> config;
     BoidState state;
 
     // Utility
@@ -40,7 +41,7 @@ private:
 
 public:
     // Constructor
-    Boid(BoidConfig config, BoidState state = {sf::Vector2f(0, 0), 0, sf::Vector2f(0, 0), sf::Vector2f(0, 0)});
+    Boid(std::shared_ptr<BoidConfig>, BoidState state = {sf::Vector2f(0, 0), 0, sf::Vector2f(0, 0), sf::Vector2f(0, 0)});
 
     // Methods
     void applyForce(sf::Vector2f force);
@@ -51,11 +52,11 @@ public:
 
     // Getter
     BoidState getState();
-    BoidConfig getConfig();
+    std::shared_ptr<BoidConfig> getConfig();
 
     // Setter
     void setState(BoidState state);
-    void setConfig(BoidConfig config);
+    void setConfig(std::shared_ptr<BoidConfig> config);
 
 };
 
