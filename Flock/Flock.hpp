@@ -69,14 +69,18 @@ private:
     FlockConfig config;
     std::shared_ptr<BoidConfig> sharedBoidConfig;
     Boid *followed_boid;
+    void generate_boids();
 
 public:
     Flock(FlockConfig &config);
-    // Flock(std::vector<Boid> boids);
+    
     void addBoid(Boid b);
     void applyFlockingRules();
+    
+    void reset();
     void update();
     void render(sf::RenderWindow &window);
+    
     void setConfig(FlockConfig &config);
 };
 

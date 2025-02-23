@@ -216,6 +216,12 @@ int main()
     hbox2->addLabel("Follow One Boid ");
     hbox2->add(followOneBoidCheckBox);
 
+    gui::Button *resetButton = new gui::Button("Reset");
+    resetButton->setCallback([&flock]{
+        flock.reset();
+    });
+    hbox2->add(resetButton);
+
     // Main Loop
     sf::Clock clock;
     while (App.isOpen())

@@ -14,7 +14,14 @@ Flock::Flock(FlockConfig &config) : config(config)
             config.separationRadius,
             config.alignmentRadius,
             config.cohesionRadius});
-    for (int i = 0; i < config.numBoids; i++)
+    
+    generate_boids();
+
+}
+
+void Flock::generate_boids()
+{
+       for (int i = 0; i < config.numBoids; i++)
     {
         if (config.randomize)
         {
@@ -64,6 +71,12 @@ void Flock::applyFlockingRules()
 
         boid.applyForce(resultantForce);
     }
+}
+
+void Flock::reset()
+{
+    boids.clear();
+    generate_boids();
 }
 
 void Flock::update()
