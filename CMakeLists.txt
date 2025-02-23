@@ -5,7 +5,8 @@ set(SFML_WIDGETS_LIBRARY_PATH "/home/carlios/cpp-projects/sfml-widgets/lib")
 set(SFML_WIDGETS_HEADER_PATH "/home/carlios/cpp-projects/sfml-widgets/src/Gui")
 
 # Set C++ standard
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Find SFML
 find_package(SFML COMPONENTS system window graphics REQUIRED)
