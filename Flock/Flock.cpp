@@ -4,8 +4,8 @@ Flock::Flock(FlockConfig &config) : config(config)
 {
     // generate boids
 
-    sharedBoidConfig = std::make_shared<BoidConfig> (
-        BoidConfig {
+    sharedBoidConfig = std::make_shared<BoidConfig>(
+        BoidConfig{
             config.maxSpeed,
             config.maxForce,
             config.separationWeight,
@@ -13,9 +13,7 @@ Flock::Flock(FlockConfig &config) : config(config)
             config.cohesionWeight,
             config.separationRadius,
             config.alignmentRadius,
-            config.cohesionRadius
-        }
-    );
+            config.cohesionRadius});
     for (int i = 0; i < config.numBoids; i++)
     {
         if (config.randomize)
@@ -45,8 +43,9 @@ Flock::Flock(FlockConfig &config) : config(config)
             // ToDo: generate boids uniformly
         }
     }
+
+    followed_boid = &boids[0];
 }
-// Flock::Flock(std::vector<Boid> boids) : boids(boids) {}
 
 void Flock::addBoid(Boid boid)
 {
@@ -79,12 +78,6 @@ void Flock::render(sf::RenderWindow &window)
 {
     for (auto &boid : boids)
     {
-        sf::CircleShape shape(config.boidRadius, 3);
-        shape.setPosition(boid.getState().pos);
-        shape.setRotation(boid.getState().rot);
-        shape.setFillColor(sf::Color::White);
-        // window.draw(shape);
-
         sf::ConvexShape convex;
         convex.setPointCount(3);
         convex.setPoint(0, {-config.boidRadius / 2, +config.boidRadius / 2});
@@ -93,7 +86,39 @@ void Flock::render(sf::RenderWindow &window)
         convex.setPosition(boid.getState().pos);
         convex.setRotation(boid.getState().rot);
 
-        convex.setFillColor(sf::Color::White);
+        if (&boid == followed_boid)
+        {
+            convex.setFillColor(sf::Color::Yellow);
+
+            std::cout << "alignment radius: " << config.alignmentRadius << std::endl;
+            // create alignment circle
+            sf::CircleShape alignment_circle(config.alignmentRadius);
+            alignment_circle.setPosition(sf::Vector2f(boid.getState().pos.x - config.alignmentRadius, boid.getState().pos.y - config.alignmentRadius));
+            alignment_circle.setOutlineColor(sf::Color::Red);
+            alignment_circle.setOutlineThickness(3.f);
+            alignment_circle.setFillColor(sf::Color::Transparent);
+            window.draw(alignment_circle);
+
+            // create cohesion circle
+            sf::CircleShape cohesion_circle(config.cohesionRadius);
+            cohesion_circle.setPosition(sf::Vector2f(boid.getState().pos.x - config.cohesionRadius, boid.getState().pos.y - config.cohesionRadius));
+            cohesion_circle.setOutlineColor(sf::Color::Green);
+            cohesion_circle.setOutlineThickness(3.f);
+            cohesion_circle.setFillColor(sf::Color::Transparent);
+            window.draw(cohesion_circle);
+
+            // create separation circle
+            sf::CircleShape separation_circle(config.separationRadius);
+            separation_circle.setPosition(sf::Vector2f(boid.getState().pos.x - config.separationRadius, boid.getState().pos.y - config.separationRadius));
+            separation_circle.setOutlineColor(sf::Color::Blue);
+            separation_circle.setOutlineThickness(3.f);
+            separation_circle.setFillColor(sf::Color::Transparent);
+            window.draw(separation_circle);
+        }
+        else
+        {
+            convex.setFillColor(sf::Color::White);
+        }
         window.draw(convex);
     }
 }
@@ -101,9 +126,9 @@ void Flock::render(sf::RenderWindow &window)
 void Flock::setConfig(FlockConfig &config)
 {
     this->config = config;
- 
-    sharedBoidConfig = std::make_shared<BoidConfig> (
-        BoidConfig {
+
+    sharedBoidConfig = std::make_shared<BoidConfig>(
+        BoidConfig{
             config.maxSpeed,
             config.maxForce,
             config.separationWeight,
@@ -111,12 +136,9 @@ void Flock::setConfig(FlockConfig &config)
             config.cohesionWeight,
             config.separationRadius,
             config.alignmentRadius,
-            config.cohesionRadius
-        }
-    );
+            config.cohesionRadius});
     for (auto &boid : boids)
     {
         boid.setConfig(sharedBoidConfig);
     }
-    
 }

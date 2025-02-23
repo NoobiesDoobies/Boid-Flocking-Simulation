@@ -42,6 +42,7 @@ struct FlockConfig
     bool showPerceptionRadius;
     bool trailEffect;
     float boidRadius;
+    bool followOneBoid;
 
     // generation
     bool randomize;
@@ -51,13 +52,13 @@ struct FlockConfig
                 float separationWeight = 1.5f, float alignmentWeight = 1.0f, float cohesionWeight = 1.0f, float separationRadius = 1.f, float alignmentRadius = 1.f, float cohesionRadius = 1.f,
                 int windowWidth = 800, int windowHeight = 600, bool wrapAroundEdges = true, int boundaryMargin = 10,
                 bool mouseAttraction = false, float mouseForce = 0.5f,
-                bool showVelocityVectors = false, bool showPerceptionRadius = false, bool trailEffect = false, float boidRadius = 5.f,
+                bool showVelocityVectors = false, bool showPerceptionRadius = false, bool trailEffect = false, float boidRadius = 5.f, bool followOneBoid = false,
                 bool randomize = true)
         : numBoids(numBoids), maxSpeed(maxSpeed), maxForce(maxForce),
           separationWeight(separationWeight), alignmentWeight(alignmentWeight), cohesionWeight(cohesionWeight), separationRadius(separationRadius), alignmentRadius(alignmentRadius), cohesionRadius(cohesionRadius),
           windowWidth(windowWidth), windowHeight(windowHeight), wrapAroundEdges(wrapAroundEdges), boundaryMargin(boundaryMargin),
           mouseAttraction(mouseAttraction), mouseForce(mouseForce),
-          showVelocityVectors(showVelocityVectors), showPerceptionRadius(showPerceptionRadius), trailEffect(trailEffect), boidRadius(boidRadius),
+          showVelocityVectors(showVelocityVectors), showPerceptionRadius(showPerceptionRadius), trailEffect(trailEffect), boidRadius(boidRadius), followOneBoid(followOneBoid),
           randomize(randomize) {}
 };
 
@@ -67,6 +68,7 @@ private:
     std::vector<Boid> boids;
     FlockConfig config;
     std::shared_ptr<BoidConfig> sharedBoidConfig;
+    Boid *followed_boid;
 
 public:
     Flock(FlockConfig &config);

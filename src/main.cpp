@@ -85,6 +85,7 @@ int main()
     config.separationRadius = WINDOW_WIDTH / 10;
     config.alignmentRadius = WINDOW_WIDTH / 5;
     config.cohesionRadius = WINDOW_WIDTH / 5;
+    config.followOneBoid = true;
 
     // Initialize Flock
     std::cout << "Creating Flock..." << std::endl;
