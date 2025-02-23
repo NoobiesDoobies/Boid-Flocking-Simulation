@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <memory>
+#include <bits/stdc++.h>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -59,13 +60,12 @@ void clearScreen(sf::RenderWindow *window, sf::Color sim_bg_color, sf::Color sli
 struct SliderConfig
 {
     std::string name;
-    int minValue;
-    int maxValue;
     int step;
+    float default_value;
     float scaler;
     float *variableToBeChanged;
     std::unique_ptr<gui::ProgressBar> pbar;
-
+    std::unique_ptr<gui::Label> value_label;
 };
 
 int main()
@@ -113,17 +113,16 @@ int main()
 
     // Create slider
     std::vector<SliderConfig> slider_configs;
-    //                         name,                min,    max,    step,   scaler, variableToBeChanged
-    // slider_configs.push_back({"Number of Boids", 1, 100, 1, 1, &config.numBoids});
-    slider_configs.push_back({"Max Speed        ", 1, 20, 1, 1, &config.maxSpeed, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH))});
-    slider_configs.push_back({"Max Force        ", 1, 20, 1, 1, &config.maxForce, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH))});
-    slider_configs.push_back({"Separation Weight", 0, 20, 1, 1, &config.separationWeight, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH))});
-    slider_configs.push_back({"Alignment Weight ", 0, 20, 1, 1, &config.alignmentWeight, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH))});
-    slider_configs.push_back({"Cohesion Weight  ", 0, 20, 1, 1, &config.cohesionWeight, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH))});
-    slider_configs.push_back({"Separation Radius", 1, 200, 1, 1, &config.separationRadius, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH))});
-    slider_configs.push_back({"Alignment Radius ", 1, 200, 1, 1, &config.alignmentRadius, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH))});
-    slider_configs.push_back({"Cohesion Radius  ", 1, 200, 1, 1, &config.cohesionRadius, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH))});
-    slider_configs.push_back({"Boid Radius      ", 1, 20, 1, 1, &config.boidRadius, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH))});
+    //                         name,               step,   default_value, scaler, variableToBeChanged
+    slider_configs.push_back({"Max Speed        ", 1, config.maxSpeed,          (config.maxSpeed * 3) / 100 , &config.maxSpeed, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.maxSpeed)))});
+    slider_configs.push_back({"Max Force        ", 1, config.maxForce,          (config.maxForce * 3) / 100 , &config.maxForce, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.maxForce)))});
+    slider_configs.push_back({"Separation Weight", 1, config.separationWeight,  (config.separationWeight * 3) / 100 , &config.separationWeight, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.separationWeight)))});
+    slider_configs.push_back({"Alignment Weight ", 1, config.alignmentWeight,   (config.alignmentWeight * 3) / 100 , &config.alignmentWeight, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.alignmentWeight)))});
+    slider_configs.push_back({"Cohesion Weight  ", 1, config.cohesionWeight,    (config.cohesionWeight * 3) / 100 , &config.cohesionWeight, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.cohesionWeight)))});
+    slider_configs.push_back({"Separation Radius", 1, config.separationRadius,  (config.separationRadius * 3) / 100 , &config.separationRadius, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.separationRadius)))});
+    slider_configs.push_back({"Alignment Radius ", 1, config.alignmentRadius,   (config.alignmentRadius * 3) / 100 , &config.alignmentRadius, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.alignmentRadius)))});
+    slider_configs.push_back({"Cohesion Radius  ", 1, config.cohesionRadius,    (config.cohesionRadius * 3) / 100 , &config.cohesionRadius, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.cohesionRadius)))});
+    slider_configs.push_back({"Boid Radius      ", 1, config.boidRadius,        (config.boidRadius * 3) / 100 , &config.boidRadius, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.boidRadius)))});
 
     for (auto &slider_config : slider_configs)
     {
@@ -135,6 +134,12 @@ int main()
         // add slider
         gui::Slider *slider = new gui::Slider(SLIDER_LENGTH);
         slider->setStep(slider_config.step);
+        slider->setValue(slider_config.default_value / slider_config.scaler);
+
+
+        // set default value:
+        slider_config.pbar.get()->setValue(slider->getValue());
+
         slider->setCallback([&slider_config, slider, &config, &flock]()
                             {
                                 // Directly update the value
@@ -143,15 +148,14 @@ int main()
                                 // Apply updated config
                                 flock.setConfig(config);
 
-                                // Debug print
-                                std::cout << slider_config.name << " is now " << *slider_config.variableToBeChanged << std::endl;
-
                                 slider_config.pbar.get()->setValue(slider->getValue());
-                            });
+                                
+                                slider_config.value_label.get()->setText(std::to_string(*slider_config.variableToBeChanged)); });
         hbox1->add(slider);
 
         // add progress bar
-        hbox1->add(slider_config.pbar.get());
+        // hbox1->add(slider_config.pbar.get());
+        hbox1->add(slider_config.value_label.get());
     }
 
     // Main Loop
