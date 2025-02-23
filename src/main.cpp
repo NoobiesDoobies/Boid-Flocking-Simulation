@@ -77,6 +77,34 @@ void drawSettingsWindow(sf::RenderWindow *window, sf::Color bg_color)
     window->draw(set);
 }
 
+void drawLegend(sf::RenderWindow *window)
+{
+    gui::Menu legend(*window);
+    gui::Theme::loadFont("widget_styles/tahoma.ttf");
+
+    legend.setPosition(0,0);
+    gui::VBoxLayout *vbox = legend.addVBoxLayout();
+
+    gui::Label *alignmentLabel = new gui::Label("Alignment Radius");
+    alignmentLabel->setFillColor(sf::Color::Red);
+    alignmentLabel->setTextSize(15);
+
+    gui::Label *cohesionLabel = new gui::Label("Cohesion Radius");
+    cohesionLabel->setFillColor(sf::Color::Green);
+    cohesionLabel->setTextSize(15);
+
+    gui::Label *separationLabel = new gui::Label("Separation Radius");
+    separationLabel->setFillColor(sf::Color::Blue);
+    separationLabel->setTextSize(15);
+
+    vbox->add(alignmentLabel);
+    vbox->add(cohesionLabel);
+    vbox->add(separationLabel);
+
+    window->draw(legend);
+}
+
+
 struct SliderConfig
 {
     std::string name;
@@ -184,8 +212,7 @@ int main()
     followOneBoidCheckBox->setCallback([&config, &flock, followOneBoidCheckBox]()
                                        {
                                            config.followOneBoid = followOneBoidCheckBox->isChecked();
-                                           flock.setConfig(config);
-                                       });
+                                           flock.setConfig(config); });
     hbox2->addLabel("Follow One Boid ");
     hbox2->add(followOneBoidCheckBox);
 
@@ -214,6 +241,7 @@ int main()
         drawSettingsWindow(&App, hex2color("#d4d0c8"));
         App.draw(menu);
 
+        drawLegend(&App);
         App.display();
 
         sf::sleep(sf::milliseconds(16)); // Maintain ~60 FPS
