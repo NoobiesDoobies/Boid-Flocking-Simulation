@@ -57,6 +57,26 @@ void clearScreen(sf::RenderWindow *window, sf::Color sim_bg_color, sf::Color sli
     window->draw(slider);
 }
 
+void drawSimulationWindow(sf::RenderWindow *window, sf::Color bg_color)
+{
+    sf::RectangleShape sim({WINDOW_WIDTH, WINDOW_HEIGHT});
+
+    sim.setPosition({0, 0});
+    sim.setFillColor(bg_color);
+
+    window->draw(sim);
+}
+
+void drawSettingsWindow(sf::RenderWindow *window, sf::Color bg_color)
+{
+    sf::RectangleShape set({MENU_WIDTH, MENU_HEIGHT});
+
+    set.setPosition({WINDOW_WIDTH, 0});
+    set.setFillColor(bg_color);
+
+    window->draw(set);
+}
+
 struct SliderConfig
 {
     std::string name;
@@ -83,7 +103,7 @@ int main()
     config.cohesionWeight = 1.0;
     config.boidRadius = 7.5;
     config.separationRadius = WINDOW_WIDTH / 10;
-    config.alignmentRadius = WINDOW_WIDTH / 5;
+    config.alignmentRadius = WINDOW_WIDTH / 15;
     config.cohesionRadius = WINDOW_WIDTH / 5;
     config.followOneBoid = true;
 
@@ -115,15 +135,15 @@ int main()
     // Create slider
     std::vector<SliderConfig> slider_configs;
     //                         name,               step,   default_value, scaler, variableToBeChanged
-    slider_configs.push_back({"Max Speed        ", 1, config.maxSpeed,          (config.maxSpeed * 3) / 100 , &config.maxSpeed, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.maxSpeed)))});
-    slider_configs.push_back({"Max Force        ", 1, config.maxForce,          (config.maxForce * 3) / 100 , &config.maxForce, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.maxForce)))});
-    slider_configs.push_back({"Separation Weight", 1, config.separationWeight,  (config.separationWeight * 3) / 100 , &config.separationWeight, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.separationWeight)))});
-    slider_configs.push_back({"Alignment Weight ", 1, config.alignmentWeight,   (config.alignmentWeight * 3) / 100 , &config.alignmentWeight, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.alignmentWeight)))});
-    slider_configs.push_back({"Cohesion Weight  ", 1, config.cohesionWeight,    (config.cohesionWeight * 3) / 100 , &config.cohesionWeight, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.cohesionWeight)))});
-    slider_configs.push_back({"Separation Radius", 1, config.separationRadius,  (config.separationRadius * 3) / 100 , &config.separationRadius, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.separationRadius)))});
-    slider_configs.push_back({"Alignment Radius ", 1, config.alignmentRadius,   (config.alignmentRadius * 3) / 100 , &config.alignmentRadius, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.alignmentRadius)))});
-    slider_configs.push_back({"Cohesion Radius  ", 1, config.cohesionRadius,    (config.cohesionRadius * 3) / 100 , &config.cohesionRadius, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.cohesionRadius)))});
-    slider_configs.push_back({"Boid Radius      ", 1, config.boidRadius,        (config.boidRadius * 3) / 100 , &config.boidRadius, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.boidRadius)))});
+    slider_configs.push_back({"Max Speed        ", 1, config.maxSpeed, (config.maxSpeed * 3) / 100, &config.maxSpeed, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.maxSpeed)))});
+    slider_configs.push_back({"Max Force        ", 1, config.maxForce, (config.maxForce * 3) / 100, &config.maxForce, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.maxForce)))});
+    slider_configs.push_back({"Separation Weight", 1, config.separationWeight, (config.separationWeight * 3) / 100, &config.separationWeight, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.separationWeight)))});
+    slider_configs.push_back({"Alignment Weight ", 1, config.alignmentWeight, (config.alignmentWeight * 3) / 100, &config.alignmentWeight, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.alignmentWeight)))});
+    slider_configs.push_back({"Cohesion Weight  ", 1, config.cohesionWeight, (config.cohesionWeight * 3) / 100, &config.cohesionWeight, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.cohesionWeight)))});
+    slider_configs.push_back({"Separation Radius", 1, config.separationRadius, (config.separationRadius * 3) / 100, &config.separationRadius, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.separationRadius)))});
+    slider_configs.push_back({"Alignment Radius ", 1, config.alignmentRadius, (config.alignmentRadius * 3) / 100, &config.alignmentRadius, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.alignmentRadius)))});
+    slider_configs.push_back({"Cohesion Radius  ", 1, config.cohesionRadius, (config.cohesionRadius * 3) / 100, &config.cohesionRadius, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.cohesionRadius)))});
+    slider_configs.push_back({"Boid Radius      ", 1, config.boidRadius, (config.boidRadius * 3) / 100, &config.boidRadius, std::make_unique<gui::ProgressBar>(gui::ProgressBar(PROGRESS_BAR_LENGTH)), std::make_unique<gui::Label>(gui::Label(std::to_string(config.boidRadius)))});
 
     for (auto &slider_config : slider_configs)
     {
@@ -136,7 +156,6 @@ int main()
         gui::Slider *slider = new gui::Slider(SLIDER_LENGTH);
         slider->setStep(slider_config.step);
         slider->setValue(slider_config.default_value / slider_config.scaler);
-
 
         // set default value:
         slider_config.pbar.get()->setValue(slider->getValue());
@@ -159,6 +178,17 @@ int main()
         hbox1->add(slider_config.value_label.get());
     }
 
+    gui::HBoxLayout *hbox2 = vbox->addHBoxLayout();
+
+    gui::CheckBox *followOneBoidCheckBox = new gui::CheckBox(true);
+    followOneBoidCheckBox->setCallback([&config, &flock, followOneBoidCheckBox]()
+                                       {
+                                           config.followOneBoid = followOneBoidCheckBox->isChecked();
+                                           flock.setConfig(config);
+                                       });
+    hbox2->addLabel("Follow One Boid ");
+    hbox2->add(followOneBoidCheckBox);
+
     // Main Loop
     sf::Clock clock;
     while (App.isOpen())
@@ -178,10 +208,12 @@ int main()
         flock.update(); // Ensure update function accepts delta time
 
         // Render
-        // App.clear(hex2color("#d4d0c8"));
-        clearScreen(&App, sf::Color::Black, hex2color("#d4d0c8"));
-        App.draw(menu);
+        drawSimulationWindow(&App, sf::Color::Black);
         flock.render(App);
+
+        drawSettingsWindow(&App, hex2color("#d4d0c8"));
+        App.draw(menu);
+
         App.display();
 
         sf::sleep(sf::milliseconds(16)); // Maintain ~60 FPS

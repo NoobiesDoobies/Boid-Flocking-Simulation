@@ -86,11 +86,10 @@ void Flock::render(sf::RenderWindow &window)
         convex.setPosition(boid.getState().pos);
         convex.setRotation(boid.getState().rot);
 
-        if (&boid == followed_boid)
+        if (&boid == followed_boid && config.followOneBoid)
         {
             convex.setFillColor(sf::Color::Yellow);
 
-            std::cout << "alignment radius: " << config.alignmentRadius << std::endl;
             // create alignment circle
             sf::CircleShape alignment_circle(config.alignmentRadius);
             alignment_circle.setPosition(sf::Vector2f(boid.getState().pos.x - config.alignmentRadius, boid.getState().pos.y - config.alignmentRadius));
